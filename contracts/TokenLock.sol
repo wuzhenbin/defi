@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+error TokenLocker__IllTime();
+error TokenLocker__NoTokens();
+
+contract TokenLocker {
+    // 事件
+    event TokenLockStart(
+        address indexed beneficiary,
+        address indexed token,
+        uint256 startTime,
+        uint256 lockTime
+    );
+    event Release(
+        address indexed beneficiary,
+        address indexed token,
+        uint256 releaseTime,
+        uint256 amount
+    );
+
+    // 被锁仓的ERC20代币合约
+    IERC20 public immutable token;
+    // 受益人地址
+    address public immutable beneficiary;
+    // 锁仓时间(秒)
+    uint256 public immutable lockTime;
+    // 锁仓起始时间戳(秒)
+    uint256 public immutable startTime;
+
+    constructor(IERC20 token_, address beneficiary_, uint256 lockTime_) {
+        require(lockTime_ > 0, "TokenLock: lock time should greater than 0");
+        token = token_;
+        beneficiary = beneficiary_;
+        lockTime = lockTime_;
+        startTime = block.timestamp;
+
+        emit TokenLockStart(
+            beneficiary_,
+            address(token_),
+            block.timestamp,
+            lockTime_
+        );
+    }
+
+    // 在锁仓时间过后, 将代币释放给受益人.
+    function release() public {
+        if (block.timestamp < startTime + lockTime) {
+            revert TokenLocker__IllTime();
+        }
+
+        uint256 amount = token.balanceOf(address(this));
+        if (amount <= 0) {
+            revert TokenLocker__NoTokens();
+        }
+
+        token.transfer(beneficiary, amount);
+
+        emit Release(msg.sender, address(token), block.timestamp, amount);
+    }
+}
