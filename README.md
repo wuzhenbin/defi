@@ -1,7 +1,4 @@
-
-
-hh test test/erc20/tokenLock.test.js
-hh test test/erc20/tokenVestings.test.js
-hh test test/erc20/weth.test.js
-
-
+hh test test/TokenLock.test.js
+hh test test/TokenVestings.test.js
+hh test test/WETH.test.js
+hh test test/PaymentSplit.test.js
