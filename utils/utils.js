@@ -16,6 +16,20 @@ const increaseTime = async (increaseTime) => {
     await network.provider.send("evm_mine")
 }
 
+// 多签 按顺序 从小到大签
+const getSignature = async (users, hash) => {
+    // sort the users
+    let newSort = users.sort((a, b) => a.address - b.address)
+    let signature = "0x"
+
+    for (let i = 0; i < newSort.length; i++) {
+        let sigItem = await newSort[i].signMessage(ethers.utils.arrayify(hash))
+        signature = `${signature}${sigItem.replace("0x", "")}`
+    }
+
+    return signature
+}
+
 // 获取合约或账户余额
 const getBalance = ethers.provider.getBalance
 
@@ -25,4 +39,5 @@ module.exports = {
     getBlockTime,
     getBalance,
     increaseTime,
+    getSignature,
 }
