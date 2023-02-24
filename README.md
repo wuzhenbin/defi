@@ -5,3 +5,4 @@ hh test test/PaymentSplit.test.js
 hh test test/TimeLock.test.js
 hh test test/MultSigWallet.test.js
 hh test test/MultSigWalletOnChain.test.js
+hh test test/CrowdFund.test.js

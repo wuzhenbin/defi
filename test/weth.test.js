@@ -1,10 +1,7 @@
 const { assert, expect } = require("chai")
 const { network, ethers } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
-const { eth2big } = require("../utils/utils")
-
-// 获取合约或账户余额
-const getBalance = ethers.provider.getBalance
+const { eth2big, getBalance } = require("../utils/utils")
 
 if (!developmentChains.includes(network.name)) {
     describe.skip
